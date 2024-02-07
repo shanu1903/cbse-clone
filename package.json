@@ -6,7 +6,10 @@
   "scripts": {
     "build:client" : "npm run build --prefix cbse-ui",
     "dev:client" : "npm run dev --prefix cbse-ui",
-    "install:client" : "npm install --prefix cbse-ui"
+    "install:client" : "npm install --prefix cbse-ui",
+    "install:server" : "npm install --prefix cbse-server",
+    "install" : "npm run install:client && npm run install:server",
+    "dev:server" : "npm run dev --prefix cbse-server"
   },
   "keywords": [],
   "author": "",
