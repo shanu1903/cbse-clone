@@ -8,7 +8,8 @@ const studentSchema = new Schema({
     rollNumber : String,
     schoolNumber : String,
     admitCardId : String,
-    dob : Number
+    dob : Number,
+    createdAt : Number
 });
 const StudentModel = mongoose.model('Student', studentSchema);
 

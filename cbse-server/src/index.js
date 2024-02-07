@@ -24,7 +24,7 @@ db.once('open', () => console.log('Connected to MongoDB'));
 
 
 // api routes
-app.use('/v1', api);
+app.use('/api', api);
 
 // for serving rest of static files
 app.use(express.static(path.join(__dirname,  '..', '..', 'cbse-ui', 'dist')));

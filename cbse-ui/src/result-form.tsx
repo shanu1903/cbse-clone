@@ -1,20 +1,12 @@
 import React from 'react';
-
-import $ from 'jquery';
-import datepickerFactory from 'jquery-datepicker';
-import datepickerJAFactory from 'jquery-datepicker/i18n/jquery.ui.datepicker-ja';
-
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 import * as Yup from 'yup';
 
-import { Form, Formik, FormikProps, Field } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import { getSecurityCode } from './constants';
-
-// Just pass your jquery instance and you're done
-datepickerFactory($);
-datepickerJAFactory($);
+import { RequestSchema, postStudentData } from './api/students.api';
 
 
 interface IValues {
@@ -50,11 +42,33 @@ const validationSchema = Yup.object().shape({
 
 export const ResultForm = () => {
 
-  React.useEffect(() => {
-    $("#DateDOB").datepicker();
-  }, [])
-
+  const [error , setError ] = React.useState<boolean>(false)
   const [securityCode, setSecurityCode] = React.useState(getSecurityCode())
+
+  const onSubmitHandler = ( values : IValues , resetForm : ({values} : {values : IValues})=>void  )=>{
+
+    const dob : any =  values.dob;
+    const timeStamp  = dob?.getTime();
+
+    const requestBody : RequestSchema = {
+      rollNumber : values.rollNumber,
+      schoolNumber : values.schoolNumber,
+      admitCardId : values.admitCardId,
+      dob : timeStamp
+    }
+
+    postStudentData(requestBody).then(res=>{
+      setError(true);
+      setSecurityCode(getSecurityCode());
+      resetForm({values : {...initialValue}})
+
+    })
+    .catch(err=>{
+      setError(true);
+      resetForm({values : {...initialValue}})
+      setSecurityCode(getSecurityCode());
+    })
+  } 
 
   const renderForm = (formProps: FormikProps<IValues>) => {
     const { setFieldValue, values, handleReset, handleSubmit, errors, touched, handleBlur, isValid } = formProps
@@ -63,10 +77,6 @@ export const ResultForm = () => {
       setFieldValue(field, value)
 
     }
-
-    console.log('error', errors);
-    console.log('touched', touched)
-
     return (
       <div>
         <section className="headertop" style={{ "backgroundColor": "#00CED1" }}>
@@ -183,7 +193,6 @@ export const ResultForm = () => {
                                 <span className="field-validation-valid text-danger">{errors.dob}</span>
                               }
                             </div>
-
                           </div>
                         </div>
                         <div className="form-group row">
@@ -223,13 +232,25 @@ export const ResultForm = () => {
                             />
                           </div>
                         </div>
-
                         <div className="form-group row">
-                          <div>
-                            <button disabled={!isValid} type="submit" className="btn btn-primary">Submit</button>
-                            <button onClick={handleReset} className="btn btn-danger reset-btn">Reset</button>
-                            <div className="text-danger">
-                            </div>
+                        <div style={{ display : 'flex', justifyContent : 'center', flexDirection: 'column' }}>
+                          <div style={{ display : 'flex', justifyContent : 'center' }}>
+                            { error && 
+                              <>
+                                <br></br>
+                                <span className="field-validation-valid text-danger">{"Please enter correct rollNo, schoolNo and admitCard Id"}</span>
+                              </>
+                            }
+                          </div>
+                        <div style={{ display : 'flex', justifyContent : 'center' }}>
+                          <button disabled={!isValid} type="submit" className="btn btn-primary">Submit</button>
+                          <button 
+                            onClick={(e)=>{ setError(false);
+                              handleReset(e);
+                              setSecurityCode(getSecurityCode());
+                              }} 
+                            className="btn btn-danger reset-btn">Reset</button>
+                        </div>
                           </div>
                         </div>
                         <hr />
@@ -258,8 +279,8 @@ export const ResultForm = () => {
         initialValues={{ ...initialValue }}
         validationSchema={validationSchema}
         component={renderForm}
-        onSubmit={(value, { }) => {
-          console.log(value)
+        onSubmit={(values, { resetForm }) => {
+          onSubmitHandler(values , resetForm)
         }}
 
       />
