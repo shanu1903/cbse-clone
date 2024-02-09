@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev" : "nodemon ./src/index"
+    "dev" : "nodemon ./src/index",
+    "start": "node ./src/index"
   },
   "keywords": [],
   "author": "",
@@ -18,5 +19,8 @@
   },
   "devDependencies": {
     "nodemon": "^3.0.3"
+  },
+  "engines": {
+    "node": "20.11.0"
   }
 }
