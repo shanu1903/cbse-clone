@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "install:client" : " cd .\\cbse-ui\\ &&  npm install",
-    "install:server" : "cd .\\cbse-server\\ && npm install",
+    "install:client" : "cd cbse-ui &&  npm install",
+    "install:server" : "cd cbse-server && npm install",
     "install:all" : "npm install &&  npm run install:server && npm run install:client",
 
-    "build:client" : "cd .\\cbse-ui\\ && npm run build",
-    "start:server" : "cd .\\cbse-server\\ && npm run start",
+    "build:client" : "cd cbse-ui && npm run build",
+    "start:server" : "cd cbse-server && npm run start",
     "dev" : "nodemon",
     "deploy": "npm run build:client && npm run start:server"
   },
